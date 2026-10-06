@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} — Instant URL to QR Code Generator</title>
+    <meta name="description" content="Generate high-resolution, customizable QR codes instantly and securely from any web link in-memory.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-background">
+        <div class="gradient-sphere sphere-1"></div>
+        <div class="gradient-sphere sphere-2"></div>
+    </div>
+
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                        <path d="M7 7h.01"></path>
+                        <path d="M17 7h.01"></path>
+                        <path d="M7 17h.01"></path>
+                        <path d="M17 17h.01"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">Link'o'QR</h1>
+                    <p class="brand-subtitle">High-performance in-memory QR generator</p>
+                </div>
+            </div>
+            <div class="header-badges">
+                <span class="badge badge-accent">Python / FastAPI</span>
+                <span class="badge badge-subtle">v{{ version }}</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Generator Form Section -->
+            <section class="card config-card">
+                <form id="qr-form" novalidate>
+                    <div class="form-group">
+                        <label for="url-input" class="form-label">
+                            <span>Target Destination URL</span>
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                </svg>
+                            </span>
+                            <input 
+                                type="url" 
+                                id="url-input" 
+                                name="url" 
+                                class="form-input" 
+                                placeholder="https://example.com/your-destination" 
+                                required 
+                                autocomplete="off"
+                                spellcheck="false"
+                            >
+                            <button type="button" id="paste-btn" class="input-action-btn" title="Paste from clipboard">
+                                Paste
+                            </button>
+                        </div>
+                        <div id="url-feedback" class="feedback-msg"></div>
+                    </div>
+
+                    <!-- Format & Quality Configuration -->
+                    <div class="options-accordion">
+                        <button type="button" id="toggle-options-btn" class="accordion-toggle" aria-expanded="false">
+                            <span class="toggle-label">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                                Design & Quality Customization
+                            </span>
+                            <span class="chevron-icon">▼</span>
+                        </button>
+
+                        <div id="options-panel" class="accordion-content" hidden>
+                            <div class="controls-grid">
+                                <div class="form-group">
+                                    <label for="format-select" class="form-label">Export Format</label>
+                                    <select id="format-select" name="format" class="form-select">
+                                        <option value="png" selected>PNG (High Resolution Raster)</option>
+                                        <option value="svg">SVG (Scalable Vector Graphic)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="ec-select" class="form-label">
+                                        Error Correction
+                                        <span class="info-tooltip" title="Higher levels allow QR code to be scanned even if partially damaged or obscured.">ⓘ</span>
+                                    </label>
+                                    <select id="ec-select" name="error_correction" class="form-select">
+                                        <option value="L">Level L (~7% redundancy)</option>
+                                        <option value="M" selected>Level M (~15% standard)</option>
+                                        <option value="Q">Level Q (~25% high)</option>
+                                        <option value="H">Level H (~30% best recovery)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="slider-header">
+                                        <label for="box-size-slider" class="form-label">Module / Box Size</label>
+                                        <span id="box-size-val" class="slider-val">10px</span>
+                                    </div>
+                                    <input type="range" id="box-size-slider" name="box_size" min="4" max="25" value="10" class="form-range">
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="slider-header">
+                                        <label for="border-slider" class="form-label">Quiet Zone / Border</label>
+                                        <span id="border-val" class="slider-val">4 modules</span>
+                                    </div>
+                                    <input type="range" id="border-slider" name="border" min="0" max="10" value="4" class="form-range">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Fill Color (Foreground)</label>
+                                    <div class="color-picker-wrapper">
+                                        <input type="color" id="fill-color-picker" value="#000000" class="color-input">
+                                        <input type="text" id="fill-color-hex" name="fill_color" value="#000000" class="form-input hex-input" maxlength="7">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Background Color</label>
+                                    <div class="color-picker-wrapper">
+                                        <input type="color" id="back-color-picker" value="#ffffff" class="color-input">
+                                        <input type="text" id="back-color-hex" name="back_color" value="#ffffff" class="form-input hex-input" maxlength="7">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Color Preset Themes -->
+                            <div class="palette-presets">
+                                <span class="presets-label">Preset Styles:</span>
+                                <button type="button" class="preset-btn" data-fill="#000000" data-back="#ffffff">Monochrome</button>
+                                <button type="button" class="preset-btn" data-fill="#4f46e5" data-back="#f8fafc">Indigo</button>
+                                <button type="button" class="preset-btn" data-fill="#0d9488" data-back="#f0fdfa">Emerald</button>
+                                <button type="button" class="preset-btn" data-fill="#e11d48" data-back="#fff1f2">Crimson</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="generate-btn" class="primary-btn">
+                        <span class="btn-text">Generate QR Code</span>
+                        <span class="spinner" hidden></span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Live Output Card -->
+            <section class="card output-card">
+                <div class="output-header">
+                    <h2 class="output-title">Live Preview</h2>
+                    <span id="output-meta" class="meta-tag" hidden>Ready</span>
+                </div>
+
+                <div class="preview-stage">
+                    <div id="preview-placeholder" class="preview-placeholder">
+                        <div class="placeholder-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <p class="placeholder-title">No QR Code Generated Yet</p>
+                        <p class="placeholder-desc">Enter any valid web URL and click generate to view and download your code.</p>
+                    </div>
+
+                    <div id="preview-display" class="preview-display" hidden>
+                        <div class="qr-canvas-container">
+                            <img id="qr-image" src="" alt="Generated QR Code Preview" class="qr-image">
+                        </div>
+                        <div class="qr-target-url">
+                            <span class="target-label">Target:</span>
+                            <a id="target-link" href="#" target="_blank" rel="noopener noreferrer" class="target-anchor"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Toolbar -->
+                <div id="action-toolbar" class="action-toolbar" hidden>
+                    <button type="button" id="download-btn" class="action-btn download-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span>Download Image</span>
+                    </button>
+                    <button type="button" id="copy-btn" class="action-btn copy-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>Copy Image</span>
+                    </button>
+                    <button type="button" id="visit-btn" class="action-btn visit-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        <span>Open Link</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>Generated dynamically in RAM via <code>io.BytesIO</code>. Zero persistent filesystem writes.</p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div id="toast" class="toast" role="alert" aria-live="polite" hidden></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
